@@ -1,0 +1,29 @@
+module "linux-vm1" {
+  source     = "../modules/linux-virtual-machine"
+  depends_on = [module.azure_network_subnet.subnet_id]
+  location   = "North Europe"
+  #tags           = module.tagging.tags
+  resource_group_name = var.resource_group_name
+  subnet_id           = module.azure_network_subnet.subnet_id
+  vm_name             = "Redis01dev"
+  vm_image = {
+    publisher = "Canonical"
+    offer     = "UbuntuServer"
+    sku       = "18.04-LTS"
+    version   = "latest"
+  }
+  storage_os_disk_config = {
+    disk_size_gb         = "120"
+    caching              = "ReadWrite"
+    storage_account_type = "Premium_LRS"
+  }
+  vm_size = "Standard_D4s_v3"
+
+  admin_username                 = "adminuser"
+  vm_data_disk_name              = "Redis01dev_DataDisk"
+  data_disk_storage_account_type = "Premium_LRS"
+  data_disk_size_gb              = "250"
+  #Enable Public IP
+  enable_public_ip_address = true
+  public_ip_name           = "Redis01dev-ip"
+}
